@@ -1210,7 +1210,7 @@ XPathParser.prototype.tokenize = function(s1) {
 			values.push(name);
 			continue;
 		}
-
+    console.log(pos, s);
 		throw new Error("Unexpected character " + c);
 	}
 	types.push(1);
@@ -3356,7 +3356,8 @@ FunctionResolver.prototype.addStandardFunctions = function() {
 	this.functions["{}substring-after"] = Functions.substringAfter;
 	this.functions["{}substring"] = Functions.substring;
 	this.functions["{}string-length"] = Functions.stringLength;
-	this.functions["{}normalize-space"] = Functions.normalizeSpace;
+  this.functions["{}normalize-space"] = Functions.normalizeSpace;
+  this.functions["{}matches"] = Functions.matches;
 	this.functions["{}translate"] = Functions.translate;
 	this.functions["{}boolean"] = Functions.boolean_;
 	this.functions["{}not"] = Functions.not;
@@ -3580,6 +3581,16 @@ Functions.startsWith = function() {
 	var s1 = arguments[1].evaluate(c).stringValue();
 	var s2 = arguments[2].evaluate(c).stringValue();
 	return new XBoolean(s1.substring(0, s2.length) == s2);
+};
+
+Functions.matches = function() {
+	var c = arguments[0];
+	if (arguments.length != 3) {
+		throw new Error("Function startsWith expects (string, string)");
+	}
+	var s1 = arguments[1].evaluate(c).stringValue();
+	var s2 = arguments[2].evaluate(c).stringValue();
+	return new XBoolean(new RegExp(s2).test(s1));
 };
 
 Functions.contains = function() {
